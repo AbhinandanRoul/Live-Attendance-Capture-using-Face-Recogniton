@@ -14,9 +14,28 @@ firebaseConfig = {
     'measurementId': "G-5TFT24ZJ55"
   };
 
-from PIL import Image
+# Code to take known image from Offline System directory
+"""
 # Create an encoding for the known image of the student
 known_image = face_recognition.load_image_file("C:\\Users\\myp\\Pictures\\Camera Roll\\me.jpg")
+original_encoding = face_recognition.face_encodings(known_image)[0]
+"""
+
+# Extracting known image from online url
+
+import io, requests
+from PIL import Image
+url="https://s35691.pcdn.co/wp-content/uploads/2017/06/iStock-609683672-studying.jpg"
+response = requests.get(url)
+image_bytes = io.BytesIO(response.content)
+img11= Image.open(image_bytes) # img11 refers to the new image from online url
+
+# Save the retrieved image in our system
+online_extract_img_path="C:\\Users\\myp\\PycharmProjects\\Attendance\\Face_Images_Captured\\online1.jpg"
+img11.save(online_extract_img_path)
+
+# Create encoding for known image
+known_image = face_recognition.load_image_file(online_extract_img_path)
 original_encoding = face_recognition.face_encodings(known_image)[0]
 
 
