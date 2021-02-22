@@ -1,3 +1,7 @@
+# INSTRUCTIONS:
+# In Line 24, give the image path of your known photo in local system
+# In Line 60, Give the path of an empty directory in the following format; dirpath\unknown' + str(i) + '.jpg
+
 import cv2,time,os, face_recognition, streamlit as st,pyrebase
 from datetime import datetime
 import datetime
@@ -15,14 +19,13 @@ firebaseConfig = {
   };
 
 # Code to take known image from Offline System directory
-"""
+
 # Create an encoding for the known image of the student
 known_image = face_recognition.load_image_file("C:\\Users\\myp\\Pictures\\Camera Roll\\me.jpg")
 original_encoding = face_recognition.face_encodings(known_image)[0]
+
 """
-
 # Extracting known image from online url
-
 import io, requests
 from PIL import Image
 url="https://s35691.pcdn.co/wp-content/uploads/2017/06/iStock-609683672-studying.jpg"
@@ -37,6 +40,7 @@ img11.save(online_extract_img_path)
 # Create encoding for known image
 known_image = face_recognition.load_image_file(online_extract_img_path)
 original_encoding = face_recognition.face_encodings(known_image)[0]
+"""
 
 
 st.header("Student Companion for Attendance")
