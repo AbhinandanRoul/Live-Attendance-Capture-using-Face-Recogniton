@@ -3,16 +3,6 @@ from datetime import datetime
 import datetime
 from PIL import Image
 #Firebase configuration SECRET
-firebaseConfig = {
-    'apiKey': "AIzaSyAltyq3D5_TW8GluZ4goEBmwP2kGD41vY8",
-    'authDomain': "attendancesystem-1c820.firebaseapp.com",
-    'databaseURL': "https://attendancesystem-1c820-default-rtdb.firebaseio.com",
-    'projectId': "attendancesystem-1c820",
-    'storageBucket': "attendancesystem-1c820.appspot.com",
-    'messagingSenderId': "1064805715401",
-    'appId': "1:1064805715401:web:c2d8aab5ca364f12022c18",
-    'measurementId': "G-5TFT24ZJ55"
-  };
 
 # Code to take known image from Offline System directory
 # Create an encoding for the known image of the student
@@ -28,7 +18,8 @@ original_encoding = face_recognition.face_encodings(known_image)[0]
 
 st.header("Student Companion for Attendance")
 name=st.text_input("Enter your Name")
-classID=st.text_input("Enter class ID")
+classID=st.text_input("Enter Course ID")
+email=st.text_input("Enter your Email")
 min =st.number_input("Enter the duration of the meeting in MINUTES", step=1.0)
 
 now = datetime.datetime.now()
@@ -98,25 +89,20 @@ else:
 
 # SQL Integration
 @st.cache
-def insertBLOB(reg, classID, Date, att, name, duration,start_time):
+def insertBLOB(reg, name, email,classID, Date,start_time,att):
     mydb = mysql.connector.connect(host="localhost", database="giraffe", user="root", password="1234")
     my_cursor = mydb.cursor()
-    sql_insert_blob_query = "INSERT INTO attendance (reg, ClassID, Date, att, name, duration,Class_Start_Time) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+    sql_insert_blob_query = "INSERT INTO attendancelist (Reg, Name, email, CourseID, Date, Time,Status) VALUES (%s,%s,%s,%s,%s,%s,%s)"
     # Convert data into tuple format
-    insert_blob_tuple = (reg, classID, Date, att,name, duration, start_time)
+    insert_blob_tuple = (reg, name, email,classID, Date,start_time,att)
     result = my_cursor.execute(sql_insert_blob_query, insert_blob_tuple)
     mydb.commit()
     print("Entry updated successfully in Attendance table")
 
 
-insertBLOB(reg,classID, today_date, att,name, min, start_time)
+insertBLOB(reg, name, email,classID, today_date,start_time,att)
 st.success("Successfully Inserted")
-
-# Database Implementation
-firebase=pyrebase.initialize_app(firebaseConfig)
-db=firebase.database()
-data = {'name': name, 'class': classID, 'Date': today_date, "Attendance": att,"Start Time":start_time}
-db.child("Students").child(reg).push(data)
 
 cap.release()
 cv2.destroyAllWindows()
+
