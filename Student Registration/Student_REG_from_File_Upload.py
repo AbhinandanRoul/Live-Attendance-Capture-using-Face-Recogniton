@@ -2,17 +2,14 @@ import streamlit as st,pyrebase,mysql.connector,cv2
 import os
 import PIL.Image
 from PIL.Image import Image
-
 k=os.path.exists("temp")
 if(k==False):
     os.mkdir("temp")
-
 st.title("Student Registration")
 Name=st.text_input("Name")
 Email=st.text_input("Email")
 reg =st.text_input("Registration Number")
 known_img=st.file_uploader("Upload Image", type=["png","jpg","jpeg"])
-
 
 def convertToBinaryData(filename):
     # Convert digital data to binary format
@@ -31,7 +28,6 @@ def insertBLOB(reg_num, Name, Email, Photo):
     mydb.commit()
     print("Image inserted successfully as a BLOB into students table", result)
 
-
 def save_uploadedfile(uploadedfile):
     with open(os.path.join("temp", uploadedfile.name), "wb") as f:
         f.write(uploadedfile.getbuffer()) # Writes the file to directory Local
@@ -39,5 +35,7 @@ def save_uploadedfile(uploadedfile):
     insertBLOB(reg, Name, Email, 'temp/{}'.format(uploadedfile.name)) # Calls function to insert the photo and details into SQL
     return st.success("Successfully Registered")
 
-save_uploadedfile(known_img)
+if(known_img!=None):
+    save_uploadedfile(known_img)
+
 
