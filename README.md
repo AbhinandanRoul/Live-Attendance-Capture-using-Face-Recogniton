@@ -10,7 +10,7 @@ SQL CODE to initialize attendance list<br>
 `mysql> CREATE DATABASE giraffe`<br>
 `mysql> USE giraffe`<br>
 `mysql> CREATE TABLE attendancelist(Reg INT NOT NULL PRIMARY KEY, Name varchar(30) NOT NULL,
-ematl VARCHAR(30) NOT NULL, CourseID varchar(30), Date varchar(30), Time varchar(30),
+email VARCHAR(30) NOT NULL, CourseID varchar(30), Date varchar(30), Time varchar(30),
 Status varchar (30));`
 
 
