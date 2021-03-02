@@ -3,6 +3,10 @@ import os
 import PIL.Image
 from PIL.Image import Image
 
+k=os.path.exists("temp")
+if(k==False):
+    os.mkdir("temp")
+
 st.title("Student Registration")
 Name=st.text_input("Name")
 Email=st.text_input("Email")
