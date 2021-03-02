@@ -9,12 +9,6 @@ Email=st.text_input("Email")
 reg =st.text_input("Registration Number")
 known_img=st.file_uploader("Upload Image", type=["png","jpg","jpeg"])
 
-def save_uploadedfile(uploadedfile):
-    with open(os.path.join("temp", uploadedfile.name), "wb") as f:
-        f.write(uploadedfile.getbuffer())
-    return st.success("Saved File:{} to temp".format(uploadedfile.name))
-
-save_uploadedfile(known_img)
 
 def convertToBinaryData(filename):
     # Convert digital data to binary format
@@ -33,5 +27,13 @@ def insertBLOB(reg_num, Name, Email, Photo):
     mydb.commit()
     print("Image inserted successfully as a BLOB into students table", result)
 
-insertBLOB(reg, Name, Email, 'temp/known.png')
-st.success("Successfully Registered")
+
+def save_uploadedfile(uploadedfile):
+    with open(os.path.join("temp", uploadedfile.name), "wb") as f:
+        f.write(uploadedfile.getbuffer()) # Writes the file to directory Local
+        k=uploadedfile.name # Variable to store name of file
+    insertBLOB(reg, Name, Email, 'temp/{}'.format(uploadedfile.name)) # Calls function to insert the photo and details into SQL
+    return st.success("Successfully Registered")
+
+save_uploadedfile(known_img)
+
