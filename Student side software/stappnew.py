@@ -2,7 +2,9 @@ import cv2,time,os, face_recognition, streamlit as st,pyrebase,mysql.connector
 from datetime import datetime
 import datetime
 from PIL import Image
-
+k=os.path.exists("temp")
+if(k==False):
+    os.mkdir("temp")
 
 def write_file(data, filename):
     with open(filename, 'wb') as file:
