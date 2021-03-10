@@ -42,11 +42,14 @@ def findstudent(reg):
         st.write("Email:", x[1])
 #_____________________________________________________________________
 
-
+# ------------------Subject Config--------------------------------
+subject_ID = ['subject1', 'subject2', 'subject3', 'subject4', 'subject5']
+subject_config = ['MTH1001', 'CSE1001', 'EET1001', 'CHM1001', 'ENG1001']
+# ------------------Subject Config---------------------------------
 
 st.header("Student Companion for Attendance")
 # name=st.text_input("Enter your Name")
-classID=st.text_input("Enter Course ID")
+classID = (st.text_input("Enter Course ID")).upper()
 # email=st.text_input("Enter your Email")
 # min =st.number_input("Enter the duration of the meeting in MINUTES", step=1.0)
 min=1 # Setting default values of class
@@ -63,7 +66,9 @@ if(st.button("Submit")==True):
         st.error("Student isn't registered")
 
     #___________________________
-
+    # Find subject index from subject_config
+    idx = subject_config.index(classID)
+    classID = subject_ID[idx]
     # Code to take known image from Offline System directory
     # Create an encoding for the known image of the student
     known_image = face_recognition.load_image_file("temp\\me.jpg")
