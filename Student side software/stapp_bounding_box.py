@@ -13,7 +13,6 @@ def clear_dir():
     for f in filelist:
         os.remove(os.path.join("temp", f))
 
-
 clear_dir()
 
 # --------------------------------HighLight Faces--------------------------------------------
@@ -34,14 +33,11 @@ def mark_faces(path):
     disp_img = Image.open('temp/face_highlight.jpg')  # Loads the image from given path
     img_area.image(disp_img, width=300, caption="Current capture")
 
-
-# --------------------------------HighLight Faces------------------------------------------------
-
+# --------------------------------HighLight Faces-------------------------------------------------
 
 def write_file(data, filename):
     with open(filename, 'wb') as file:
         file.write(data)
-
 
 # Code to extract image from student registration database
 # --------- Extract Photo-------------------------------------------------------------------------
@@ -144,15 +140,18 @@ if (st.button("Submit") == True):
         # disp_img = Image.open(img_path) # Loads the image from given path
         # img_area.image(disp_img,width=300, caption="Current capture") # Displays the image in area of placeholder img_area
 
-        mark_faces(img_path)
+        # mark_faces(img_path)
 
         image = face_recognition.load_image_file(img_path)
         face_locations = face_recognition.face_locations(image)
 
         if not face_locations:  # in case no face locations are returned i.e., []
+            disp_img = Image.open(img_path) # Loads the image from given path
+            img_area.image(disp_img,width=300, caption="Current capture") # Displays the image in area of placeholder img_area
             now = datetime.datetime.now()
             current_time = now.strftime("%H:%M:%S")
             st.write("No face detected at TIME", current_time)
+
         else:
             # Code to compare the face in captured frame with given student image
             unknown_image = face_recognition.load_image_file(img_path)
@@ -160,13 +159,15 @@ if (st.button("Submit") == True):
             results = face_recognition.compare_faces([original_encoding], unknown_encoding)
 
             if (results[0] == True):  # If face is successfully recognised
-
+                mark_faces(img_path)
                 now = datetime.datetime.now()
                 current_time = now.strftime("%H:%M:%S")
                 st.write("Student recognised at TIME ", current_time)
                 FaceFound += 1
 
             else:  # If face is not recognised but a face is present
+                disp_img = Image.open(img_path)  # Loads the image from given path
+                img_area.image(disp_img, width=300, caption="Current capture")  # Displays the image in area of placeholder img_area
                 now = datetime.datetime.now()
                 current_time = now.strftime("%H:%M:%S")
                 st.write("ANOTHER PERSON found at TIME", current_time)
