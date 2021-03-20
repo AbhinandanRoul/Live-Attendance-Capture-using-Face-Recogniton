@@ -1,5 +1,5 @@
 # Importing mandatory Dependencies
-import streamlit as st, mysql.connector, cv2, os, face_recognition, time
+import streamlit as st, mysql.connector, cv2, os, face_recognition, time, re, sys
 from PIL.Image import Image
 
 st.title("Welcome")
@@ -17,16 +17,44 @@ add_selectbox = st.sidebar.selectbox(
     # List of all options in sidebar
 )
 
+
 # ----------Creates a temporary folder----------
 def CreateTempDir():
     k = os.path.exists("temp")
     if not k:
         os.mkdir("temp")
-# ---------------------------------------------
 
+
+# ---------------------------------------------
 CreateTempDir()
 
+# -------------------Validate Email, Name, RegistrationID---------------------------
+
+def email_check(email):
+    regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@](\w+[.]\w{2,3}$)|(\w+[.]\w+[.]\w{2,3}$)'
+    if (re.search(regex, email)):
+        return True
+    else:
+        return False
+
+def name_check(name):
+    regex='^[A-Za-z\s]+$'
+    if(re.search(regex,name)):
+        return True
+    else:
+        return False
+
+def reg_check(reg):
+    regex='^[0-9]+$'
+    if(re.search(regex,reg)):
+        return True
+    else:
+        return False
+# -------------------------------------------------------------------------------
+
+
 # ++++++++++++++++++++STUDENT REGISTRATION+++++++++++++++++++++++++++++++
+
 if add_selectbox == "Student Registration":
     st.header("Student Registration")
 
@@ -40,8 +68,25 @@ if add_selectbox == "Student Registration":
         st.warning("Passwords don't match")
     known_img = st.file_uploader("Upload Image", type=["png", "jpg", "jpeg"])
     # ------------ Input fields---------------------------------------------
-
     if st.button("Submit") and password == password_check:
+
+        if not name_check(Name):
+            st.warning("Invalid Name")
+            sys.exit()
+        elif not email_check(Email):
+            st.warning("Invalid Email")
+            sys.exit()
+        elif not reg_check(reg):
+            st.warning("Invalid Registration ID")
+            sys.exit()
+        elif not known_img:
+            st.warning("Input an image")
+            sys.exit()
+        elif not password:
+            st.warning("Password must be set")
+            sys.exit()
+        else:
+            st.balloons()
 
         # ------Convert digital data to binary format----------
         def convertToBinaryData(filename):
@@ -95,12 +140,27 @@ elif add_selectbox == "Faculty Registration":
     if password != password_check:  # Checks if entered passwords match
         st.warning("Passwords don't match")
     classID = st.selectbox("Select your subject", subject_config)
-    auth=st.text_input("Enter Authorisation Code")
+    auth = st.text_input("Enter Authorisation Code")
     # -------------Input fields--------------------------------------
-    if (st.button("Submit") == True) and password == password_check and auth=='1020SOA':
+    if (st.button("Submit") == True) and password == password_check:
         idx = subject_config.index(classID)
         classID = subject_ID[idx]
 
+        if not name_check(Name):
+            st.warning("Invalid Name")
+            sys.exit()
+        elif not email_check(Email):
+            st.warning("Invalid Email")
+            sys.exit()
+        elif not reg_check(reg):
+            st.warning("Invalid Faculty ID")
+            sys.exit()
+        elif not password:
+            st.warning("Password must be set")
+            sys.exit()
+        elif not auth:
+            st.warning("Enter the auth code")
+            sys.exit()
 
         # -------------------------------SQL Code for faculty registration--------------------------------------------
         def facultyregistration(Reg, Name, Email, Password, Subject):
@@ -113,8 +173,11 @@ elif add_selectbox == "Faculty Registration":
 
 
         # -------------------------------SQL Code for faculty registration-------------------------------------------
-        facultyregistration(reg, Name, Email, password, classID)
-        st.success("You are registered")
+        if(auth=='1020SOA'):
+            facultyregistration(reg, Name, Email, password, classID)
+            st.success("You are registered")
+            st.balloons()
+
 
 # ++++++++++++++++++++ STUDENT DASHBOARD ++++++++++++++++++++++++++++++++
 elif add_selectbox == "Student Dashboard":
@@ -245,7 +308,7 @@ elif add_selectbox == "Faculty Dashboard":
 
 
     # This function prints faculty name and subject. It returns subject_number
-    # -------------------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------------------
 
     # ----------------------------Find All students' attendance-----------------------------------------------
     def findattendance(subject_num):
@@ -300,33 +363,45 @@ else:
     from datetime import datetime, timedelta
     import datetime
     from PIL import Image
-    CreateTempDir() # Create a Temporary Directory
+
+    CreateTempDir()  # Create a Temporary Directory
+
+
     def clear_dir():
         filelist = [f for f in os.listdir("temp") if f.endswith(".jpg")]
         for f in filelist:
             os.remove(os.path.join("temp", f))
+
+
     clear_dir()
+
 
     # --------------------------------HighLight Faces--------------------------------------------
     def mark_faces(path):
         if k == '1':
-            G = 255; R = 0;
+            G = 255;
+            R = 0;
         else:
-            G = 0; R = 255
-        image = face_recognition.load_image_file(path) # loads the image from path
-        face_locations = face_recognition.face_locations(image) # finds the locations of the face
-        image1 = cv2.imread(path, cv2.COLOR_BGR2RGB) # Converts the color to RGB from default BGR in OpenCV
+            G = 0;
+            R = 255
+        image = face_recognition.load_image_file(path)  # loads the image from path
+        face_locations = face_recognition.face_locations(image)  # finds the locations of the face
+        image1 = cv2.imread(path, cv2.COLOR_BGR2RGB)  # Converts the color to RGB from default BGR in OpenCV
         for top, right, bottom, left in face_locations:
-            image1 = cv2.rectangle(image, (left, top), (right, bottom), (R, G, 0), 3) # creates a rectangle on face
-        RGB_img = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB) # Keeps the RGB image
-        cv2.imwrite('temp/face_highlight.jpg', RGB_img) # Writes the RGB image with face highlighted into temp directory
+            image1 = cv2.rectangle(image, (left, top), (right, bottom), (R, G, 0), 3)  # creates a rectangle on face
+        RGB_img = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)  # Keeps the RGB image
+        cv2.imwrite('temp/face_highlight.jpg',
+                    RGB_img)  # Writes the RGB image with face highlighted into temp directory
         disp_img = Image.open('temp/face_highlight.jpg')  # Loads the image from given path
-        img_area.image(disp_img, width=300, caption="Current capture") # Displays the image in streamlit
+        img_area.image(disp_img, width=300, caption="Current capture")  # Displays the image in streamlit
+
+
     # --------------------------------HighLight Faces END-----------------------------------------------
 
     def write_file(data, filename):
         with open(filename, 'wb') as file:
             file.write(data)
+
 
     # Code to extract image from student registration database
     # --------- Extract Photo-------------------------------------------------------------------------
@@ -341,6 +416,7 @@ else:
         cursor.close()
         connection.close()
 
+
     # ------------------------------ Validate Student------------------------------------------------------------
     def findstudent(reg):
         connection = mysql.connector.connect(host='localhost', database='giraffe', user='root', password='1234')
@@ -353,12 +429,13 @@ else:
             st.write("Name:", x[0])
             st.write("Email:", x[1])
 
+
     # -----------------------------Student Regularity Check---------------------------------------------------
     # Checks whether the student was present in the previous class
     def isregular(reg, subject_num):
         from datetime import datetime, timedelta
-        d = datetime.today() - timedelta(days=1) # Finds yesterday's date
-        yesterday_date = str(d.strftime("%d-%m-%Y")) # Keeps yesterday's date as a formatted string
+        d = datetime.today() - timedelta(days=1)  # Finds yesterday's date
+        yesterday_date = str(d.strftime("%d-%m-%Y"))  # Keeps yesterday's date as a formatted string
         connection = mysql.connector.connect(host='localhost', database='giraffe', user='root', password='1234')
         cursor = connection.cursor()
         sql_find_attendance = "select `{date}` from `{subject}` where Reg={registration}".format(date=yesterday_date,
@@ -367,7 +444,9 @@ else:
         cursor.execute(sql_find_attendance)
         result = cursor.fetchall()
         for x in result:
-            return x[0] # returns '1' or '0'
+            return x[0]  # returns '1' or '0'
+
+
     # -----------------------------------------------------------------------------------------------------------
 
     st.header("Student Companion for Attendance")
@@ -419,7 +498,7 @@ else:
             if not face_locations:  # in case no face locations are returned i.e., []
                 disp_img = Image.open(img_path)  # Loads the image from given path
                 img_area.image(disp_img, width=300,
-                               caption="Current capture - NO FACE") # Displays the image in area of placeholder img_area
+                               caption="Current capture - NO FACE")  # Displays the image in area of placeholder img_area
                 now = datetime.datetime.now()
                 current_time = now.strftime("%H:%M:%S")
                 st.write("No face detected at TIME", current_time)
@@ -431,7 +510,7 @@ else:
                 results = face_recognition.compare_faces([original_encoding], unknown_encoding, tolerance=0.5)
 
                 if (results[0] == True):  # If face is successfully recognised
-                    mark_faces(img_path) # Calls the function which highlights the face location in Green and Red
+                    mark_faces(img_path)  # Calls the function which highlights the face location in Green and Red
                     now = datetime.datetime.now()
                     current_time = now.strftime("%H:%M:%S")
                     st.write("Student recognised at TIME ", current_time)
@@ -494,11 +573,10 @@ else:
                 mydb.commit()
                 print("Entry updated successfully in Attendance table")
 
+
         insertBLOB(reg, today_date, att, classID)
         # Delete the files in temporary folder after the end of class
         clear_dir()
         # Close the webcam
         cap.release()
         cv2.destroyAllWindows()
-
-
