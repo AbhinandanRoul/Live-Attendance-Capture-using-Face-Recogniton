@@ -21,7 +21,7 @@ create table subject5 (Reg INT NOT NULL PRIMARY KEY);<br>
 
 
 ### For Demo, the previous day attendance must be there for each subject<br>
-If today 02-05-2022 then (take yesterday as absent)
+If today `02-05-2022` then (take yesterday as absent)
 alter table subject1 add `01-05-2022` varchar(10);<br>
 alter table subject2 add `01-05-2022` varchar(10);<br>
 alter table subject3 add `01-05-2022` varchar(10);<br>
