@@ -13,11 +13,11 @@ create table registration (Reg INT NOT NULL PRIMARY KEY, NAME varchar(30) NOT NU
 
 ### To create a table for each subject
 
-create table subject1 (Reg INT NOT NULL PRIMARY KEY);
-create table subject2 (Reg INT NOT NULL PRIMARY KEY);
-create table subject3 (Reg INT NOT NULL PRIMARY KEY);
-create table subject4 (Reg INT NOT NULL PRIMARY KEY);
-create table subject5 (Reg INT NOT NULL PRIMARY KEY);
+create table subject1 (Reg INT NOT NULL PRIMARY KEY);<br>
+create table subject2 (Reg INT NOT NULL PRIMARY KEY);<br>
+create table subject3 (Reg INT NOT NULL PRIMARY KEY);<br>
+create table subject4 (Reg INT NOT NULL PRIMARY KEY);<br>
+create table subject5 (Reg INT NOT NULL PRIMARY KEY);<br>
 
 
 ### For Demo, the previous day attendance must be there for each subject<br>
