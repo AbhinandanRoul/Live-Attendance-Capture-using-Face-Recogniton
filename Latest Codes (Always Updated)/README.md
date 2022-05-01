@@ -19,3 +19,14 @@ create table subject3 (Reg INT NOT NULL PRIMARY KEY);
 create table subject4 (Reg INT NOT NULL PRIMARY KEY);
 create table subject5 (Reg INT NOT NULL PRIMARY KEY);
 
+
+### For Demo, the previous day attendance must be there for each subject<br>
+If today 02-05-2022 then (take yesterday as absent)
+alter table subject1 add `01-05-2022` varchar(10);
+alter table subject2 add `01-05-2022` varchar(10);
+alter table subject3 add `01-05-2022` varchar(10);
+alter table subject4 add `01-05-2022` varchar(10);
+alter table subject5 add `01-05-2022` varchar(10);
+
+
+
