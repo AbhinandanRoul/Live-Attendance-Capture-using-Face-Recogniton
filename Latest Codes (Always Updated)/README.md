@@ -29,4 +29,10 @@ alter table subject4 add `01-05-2022` varchar(10);<br>
 alter table subject5 add `01-05-2022` varchar(10);
 
 
+## Populating SQL for demo:
+/*alter table subject3 add `29-04-2022` varchar(10), 
+add `30-04-2022` varchar(10), add `01-05-2022` varchar(10), add `02-05-2022` varchar(10);
+insert into subject3 (`Reg`, `29-04-2022`,`30-04-2022`,`01-05-2022`,`02-05-2022`) values (19410123xx, 1,0,1,1);
+select * from subject3;*/
+
 
